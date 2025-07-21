@@ -1,6 +1,6 @@
 const request = require("supertest");
-const app = require("../server");
-const User = require("../models/User");
+const app = require("../server"); // Ensure app is exported correctly
+const User = require("../models/user");
 
 describe("User API", () => {
   let token = "";
@@ -25,7 +25,7 @@ describe("User API", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.token).toBeDefined();
-    token = response.body.token;
+    token = response.body.token; // Store the token for further tests
   });
 
   test("Get user profile", async () => {
@@ -35,5 +35,9 @@ describe("User API", () => {
 
     expect(response.status).toBe(200);
     expect(response.body.username).toBe("john_doe");
+  });
+
+  afterAll(async () => {
+    await User.sequelize.close();
   });
 });
