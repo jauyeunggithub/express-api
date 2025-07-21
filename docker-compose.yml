@@ -1,0 +1,25 @@
+version: "3.7"
+
+services:
+  db:
+    image: nouchka/sqlite
+    volumes:
+      - ./data:/data/db
+    networks:
+      - mynetwork
+
+  app:
+    build: .
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    networks:
+      - mynetwork
+    environment:
+      DB_PATH: "/data/db/myapp.sqlite"
+      NODE_ENV: development
+
+networks:
+  mynetwork:
+    driver: bridge
