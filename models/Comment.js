@@ -18,6 +18,6 @@ const Comment = sequelize.define("Comment", {
   },
 });
 
-Comment.belongsTo(User); // User can have many Comments
+Comment.belongsTo(User);
 
 module.exports = Comment;
