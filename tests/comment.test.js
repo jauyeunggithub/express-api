@@ -1,9 +1,20 @@
 const request = require("supertest");
 const app = require("../server");
+const db = require("../models");
 
 describe("POST /comments", () => {
+  let postId;
+
   beforeAll(async () => {
-    jest.spyOn(console, "log").mockImplementation(() => {});
+    await db.sequelize.sync({ force: true });
+    await db.sequelize.authenticate();
+    const post = await db.Post.create({
+      title: "Test Post",
+      content: "This is a test post content",
+    });
+
+    // Store the postId for use in the comment creation test
+    postId = post.id;
   });
 
   it("should create a new comment", async () => {
@@ -13,7 +24,7 @@ describe("POST /comments", () => {
     const res = await request(app)
       .post("/comments")
       .set("Authorization", `Bearer ${process.env.TEST_TOKEN}`)
-      .send({ postId: 1, content: "This is a test comment" });
+      .send({ postId, content: "This is a test comment" });
 
     // Assert the response status and content
     expect(res.status).toBe(201);
@@ -21,6 +32,6 @@ describe("POST /comments", () => {
   });
 
   afterAll(async () => {
-    console.log.mockRestore();
+    await db.sequelize.close();
   });
 });

@@ -1,9 +1,11 @@
 const request = require("supertest");
 const app = require("../server"); // Ensure correct path to app
+const db = require("../models");
 
 describe("POST /posts", () => {
   beforeAll(async () => {
-    jest.spyOn(console, "log").mockImplementation(() => {});
+    await db.sequelize.sync({ force: true });
+    await db.sequelize.authenticate();
   });
 
   it("should create a new post", async () => {
@@ -21,6 +23,6 @@ describe("POST /posts", () => {
   });
 
   afterAll(async () => {
-    console.log.mockRestore();
+    await db.sequelize.close();
   });
 });

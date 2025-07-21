@@ -1,12 +1,13 @@
 const request = require("supertest");
 const app = require("../server"); // Ensure app is exported correctly
-const User = require("../models/user");
+const db = require("../models");
 
 describe("User API", () => {
   let token = "";
 
   beforeAll(async () => {
-    await User.sync({ force: true });
+    await db.sequelize.sync({ force: true });
+    await db.sequelize.authenticate();
   });
 
   test("User registration", async () => {
@@ -38,6 +39,6 @@ describe("User API", () => {
   });
 
   afterAll(async () => {
-    await User.sequelize.close();
+    await db.sequelize.close();
   });
 });
